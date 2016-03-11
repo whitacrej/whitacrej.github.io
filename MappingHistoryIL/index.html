@@ -1,29 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
+  
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-  <title>Test 3d Map</title>
+  
+  <title>University of Illinois 3D Buildings Test Map</title>
+  
+  <link rel="stylesheet" href="https://js.arcgis.com/4.0beta3/esri/css/main.css">
+  
   <style>
+
     html,
-    body {
+    body,
+    #viewDiv {
       padding: 0;
       margin: 0;
     }
 
-
-    #elevationDiv {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 12px;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-    }
-
   </style>
 
-  <link rel="stylesheet" href="https://js.arcgis.com/4.0beta3/esri/css/main.css">
+  
   <script src="https://js.arcgis.com/4.0beta3/"></script>
 
   <script>
@@ -31,12 +28,11 @@
       "esri/Map",
       "esri/views/SceneView",
       "esri/layers/SceneLayer",
-      "esri/layers/GraphicsLayer",
       
       "dojo/dom",
       "dojo/on",
       "dojo/domReady!"
-    ], function(Map, SceneView, SceneLayer, GraphicsLayer, dom, on) {
+    ], function(Map, SceneView, SceneLayer, dom, on) {
 
       var map = new Map({
         basemap: "hybrid"
@@ -46,49 +42,36 @@
       var view = new SceneView({
         container: "viewDiv",
         map: map,
+        environment: {
+          lighting: {
+          directShadows: true,
+          ambientOcclusion: true,
+          date: new Date()
+          },
+          atmosphere: "realistic"
+        },
         camera: {
-          position:  [-88.237, 40.09, 1000],
-          tilt: 50
+          position:  [-88.235, 40.089, 400],
+          tilt: 80
         }
       });
 
       //Create SceneLayer and add to the map
       var sceneLayer = new SceneLayer({
-        url: "https://gis.library.illinois.edu/arcgis/rest/services/Hosted/TestScene_WSL/SceneServer/layers/0/",
-        elevationInfo: {
-          mode: "onTheGround"
-        }
+        url: "https://gis.library.illinois.edu/arcgis/rest/services/Hosted/Buildings3DTest/SceneServer/layers/0/",
       });
 
       map.add(sceneLayer);
 
-      view.then(function() {
-        // Store the default elevation layers
-        var elevationLayers = map.basemap.elevationLayers.getAll();
-
-        on(dom.byId("elevationInput"), "change", updateElevation);
-
-        function updateElevation(ev) {
-          if (!ev.target.checked) {
-            // Clear all elevation layers
-            map.basemap.elevationLayers.clear();
-          } else {
-            // Restore elevation layers to the original ones
-            map.basemap.elevationLayers = elevationLayers;
-          }
-        }
-      });
-
     });
   </script>
+
 </head>
 
+
 <body>
+
   <div id="viewDiv"></div>
-  <div id="elevationDiv">
-    <label>Elevation:
-      <input id="elevationInput" type="checkbox" checked="yes">
-    </label>
-  </div>
+
 </body>
 </html>
