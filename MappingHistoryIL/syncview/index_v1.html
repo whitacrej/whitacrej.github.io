@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Synchronize MapView and SceneView - 4.2</title>
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+    }
+    
+    .mainDiv {
+      float: left;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background-color: black;
+    }
+    
+    .syncDiv {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 350px;
+      height: 350px;
+      z-index: 1;
+      border-left: 5px solid white;
+      border-top: 5px solid white;
+      background-color: black;
+      border-top-left-radius: 30px;
+    }
+    
+    .smallImageSwitchView {
+      position: absolute;
+      bottom: 332px;
+      right: 332px;
+      height: 30px;
+      width: 30px;
+      cursor: pointer;
+      background: url(http://storymaps.esri.com/stories/2014/bee-tour/resources/icons/switchLayout.png);
+      /*background: url(../../resources/icons/switchLayout.png);*/
+      background-repeat: no-repeat;
+      background-size: 100%;
+      z-index: 99;
+      cursor: pointer;
+      opacity: .75;
+    }
+    
+    .smallImageSwitchView:hover {
+      opacity: 1.0;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.2/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.2/"></script>
+
+  <script>
+    require([
+      "esri/Map",
+
+      "esri/views/MapView",
+      "esri/views/SceneView",
+      
+      "esri/layers/SceneLayer",
+      "esri/renderers/SimpleRenderer",
+      "esri/symbols/MeshSymbol3D",
+      "esri/symbols/FillSymbol3DLayer",
+      "esri/widgets/Home",
+      "esri/widgets/Compass",
+      
+      "esri/core/watchUtils",
+
+      "dojo/domReady!"
+    ], function(
+      Map,
+      MapView, SceneView, SceneLayer, SimpleRenderer, MeshSymbol3D,
+      FillSymbol3DLayer, 
+      Home, Compass,
+      watchUtils
+    ) {
+
+      var map = new Map({
+        basemap: 'satellite',
+        ground: 'world-elevation'
+      });
+      
+      // Add 3D SceneView
+      var view1 = new SceneView({
+        id: 'view1',
+        container: 'view1Div',
+        map: map,
+        camera: {
+          position:  [-88.227247, 40.102904, 350],
+          tilt: 75
+        }
+      });
+      
+      // Modify Widgets
+      
+      view1.ui.remove("navigation-toggle");
+      // view1.ui.move("zoom", "top-right");
+      // Add home widget to the top right corner of the MapView
+      var homeWidget = new Home({
+        view: view1
+      });
+      view1.ui.add(homeWidget, "top-right");   
+      view1.ui.move("compass", "top-right");
+      
+      // Create SceneLayer and add to the map
+      var sceneLayer = new SceneLayer({
+        url: "https://gis.library.illinois.edu/arcgis/rest/services/Hosted/Buildings_3D/SceneServer/layers/0",
+        popupEnabled: false
+      });
+      map.add(sceneLayer);
+      
+      
+      // Add 2D MapView
+      var view2 = new MapView({
+        id: 'view2',
+        container: 'view2Div',
+        map: map,
+        constraints: {
+          // Disable zoom snapping to get the best synchonization
+          snapToZoom: false
+        }
+      });
+      
+      // Add home widget to the top left corner of the MapView
+      var homeWidget = new Home({
+        view: view2
+      });
+      view2.ui.add(homeWidget, "top-right");
+      
+      // Add compass widget to the top right corner of the view      
+      var compass = new Compass({
+        view: view2
+      });
+      view2.ui.add(compass, "top-right");
+      
+
+
+      /**
+       * utility method that synchronizes the viewpoint of a view to other views
+       */
+      var synchronizeView = function(view, others) {
+        others = Array.isArray(others) ? others : [others];
+
+        var viewpointWatchHandle;
+        var viewStationaryHandle;
+        var otherInteractHandlers;
+        var scheduleId;
+
+        var clear = function() {
+          if (otherInteractHandlers) {
+            otherInteractHandlers.forEach(function(handle) {
+              handle.remove();
+            });
+          }
+          viewpointWatchHandle && viewpointWatchHandle.remove();
+          viewStationaryHandle && viewStationaryHandle.remove();
+          scheduleId && clearTimeout(scheduleId);
+          otherInteractHandlers = viewpointWatchHandle =
+            viewStationaryHandle = scheduleId = null;
+        };
+
+        var interactWatcher = view.watch('interacting,animation',
+          function(newValue) {
+            if (!newValue) {
+              return;
+            }
+            if (viewpointWatchHandle || scheduleId) {
+              return;
+            }
+
+            // start updating the other views at the next frame
+            scheduleId = setTimeout(function() {
+              scheduleId = null;
+              viewpointWatchHandle = view.watch('viewpoint',
+                function(newValue) {
+                  others.forEach(function(otherView) {
+                    otherView.viewpoint = newValue;
+                  });
+                });
+            }, 0);
+
+            // stop as soon as another view starts interacting, like if the user starts panning
+            otherInteractHandlers = others.map(function(otherView) {
+              return watchUtils.watch(otherView,
+                'interacting,animation',
+                function(value) {
+                  if (value) {
+                    clear();
+                  }
+                });
+            });
+
+            // or stop when the view is stationary again
+            viewStationaryHandle = watchUtils.whenTrue(view,
+              'stationary', clear);
+          });
+
+        return {
+          remove: function() {
+            this.remove = function() {};
+            clear();
+            interactWatcher.remove();
+          }
+        }
+      };
+
+      /**
+       * utility method that synchronizes the viewpoints of multiple views
+       */
+      var synchronizeViews = function(views) {
+        var handles = views.map(function(view, idx, views) {
+          var others = views.concat();
+          others.splice(idx, 1);
+          return synchronizeView(view, others);
+        });
+
+        return {
+          remove: function() {
+            this.remove = function() {};
+            handles.forEach(function(h) {
+              h.remove();
+            });
+            handles = null;
+          }
+        }
+      }
+
+      // bind the views
+      synchronizeViews([view1, view2]);
+      
+      
+      
+    });
+    
+    
+  
+  /**
+ * jQuery UI
+ */
+  
+  </script>
+  
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
+  <script type="text/javascript">
+  
+  $( function() {
+    $( "#button" ).on( "click", function() {
+      $( ".mainDiv" ).switchClass( "mainDiv", "syncDiv", 100 );
+      $( ".syncDiv" ).switchClass( "syncDiv", "mainDiv", 100 );
+    });
+  } );
+  
+  </script>
+
+
+</head>
+<body>
+  <div id="button" class="smallImageSwitchView"></div>
+  <div id="view2Div" class="mainDiv"></div>
+  <div id="view1Div" class="syncDiv"></div>
+</body>
+
+</html>
