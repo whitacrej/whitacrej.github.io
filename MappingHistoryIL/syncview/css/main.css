@@ -1,65 +1,163 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 
-html,  body {
-	padding: 0;
-	margin: 0;
-	height: 100%;
-	overflow: hidden;
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
 }
+
+#switchButton {
+    position: absolute;
+    z-index: 99;
+    bottom: 267px;
+    right: 267px;
+    height: 30px;
+    width: 30px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background-color: darkgrey;
+    opacity: .75;
+    text-align: center;
+    color: white;
+    font-size: 16pt;
+    text-align: center;
+}
+
+    #switchButton:hover {
+        cursor: pointer;
+        opacity: 1.0;
+    }
+
 .mainDiv {
-	float: left;
-	width: 100%;
-	height: 100%;
-	z-index: 0;
-	background-color: black;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
 }
+
+.mainDivTrans1 {
+    position: absolute;
+    left: 40%;
+    top: 40%;
+    width: 2000px;
+    height: 2000px;
+    margin: -1000px 0 0 -1000px;
+    z-index: 0;
+    border-radius: 1000px;
+}
+
+.mainDivTrans2 {
+    position: absolute;
+    left: 40%;
+    top: 40%;
+    width: 400px;
+    height: 400px;
+    margin: -200px 0 0 -200px;
+    z-index: 1;
+    border: 3px solid white;
+    border-radius: 200px;
+    box-shadow: -5px -5px 10px rgba(0,0,0,0.75);
+}
+
 .ovDiv {
-	position: absolute;
-	right: -60px;
-	bottom: -60px;
-	width: 400px;
-	height: 400px;
-	z-index: 1;
-	border-left: 3px solid white;
-	border-top: 3px solid white;
-	background-color: black;
-	border-radius: 50%;
-	box-shadow: -6px -6px 10px rgba(0,0,0,0.75);/*margin: 60px 0px 0px 60px;*/
+    position: absolute;
+    right: -60px;
+    bottom: -60px;
+    width: 400px;
+    height: 400px;
+    z-index: 1;
+    border-left: 3px solid white;
+    border-top: 3px solid white;
+    border-radius: 200px;
+    box-shadow: -10px -10px 20px rgba(0,0,0,0.75);
 }
-.smallImageSwitchView {
-	position: absolute;
-	bottom: 267px;
-	right: 267px;
-	height: 30px;
-	width: 30px;
-	cursor: pointer;
-	background: url(http://storymaps.esri.com/stories/2014/bee-tour/resources/icons/switchLayout.png);
-	/*background: url(../../resources/icons/switchLayout.png);*/
-	background-repeat: no-repeat;
-	background-size: 100%;
-	z-index: 99;
-	cursor: pointer;
-	opacity: .75;
+
+.ovDivTrans1 {
+    position: absolute;
+    left: 40%;
+    top: 40%;
+    width: 400px;
+    height: 400px;
+    margin: -200px 0 0 -200px;
+    z-index: 0;
+    border: 3px solid white;
+    border-radius: 200px;
+    box-shadow: -5px -5px 10px rgba(0,0,0,0.75);
 }
-.smallImageSwitchView:hover {
-	opacity: 1.0;
+
+.ovDivTrans2 {
+    position: absolute;
+    left: 40%;
+    top: 40%;
+    width: 2000px;
+    height: 2000px;
+    margin: -1000px 0 0 -1000px;
+    z-index: 0;
+    border-radius: 1000px;
 }
+
 .esri-button {
-	border-radius: 50%;
+    border-radius: 50%;
 }
+
 .esri-zoom {
-	background-color: transparent !important;
-	box-shadow: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
+
 .esri-home {
-	border-radius: 50%;
+    border-radius: 50%;
 }
+
 .ovDiv .esri-ui-top-left {
-	top: 250px;
-	left: 40px;
+    top: 250px;
+    left: 40px;
 }
+
 .ovDiv .esri-ui-top-right {
-	top: 245px;
-	right: 60px;
+    top: 245px;
+    right: 60px;
+}
+
+.blue {
+    background-color: blue;
+}
+
+.black {
+    background-color: black;
+}
+
+/*Esri Calcite Font*/
+@font-face {
+    font-family: 'CalciteWebCoreIcons';
+    src: url('https://raw.githubusercontent.com/Esri/arcgis-js-api/master/themes/calcite/icons/fonts/CalciteWebCoreIcons.ttf?erniwi') format('truetype'), url('https://raw.githubusercontent.com/Esri/arcgis-js-api/master/themes/calcite/icons/fonts/CalciteWebCoreIcons.woff?erniwi') format('woff'), url('https://raw.githubusercontent.com/Esri/arcgis-js-api/master/themes/calcite/icons/fonts/CalciteWebCoreIcons.svg?erniwi#CalciteWebCoreIcons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="esri-icon-"], [class*=" esri-icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'CalciteWebCoreIcons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.esri-icon-swap:before {
+    content: "\e90b";
+}
+
+.esri-icon-refresh:before {
+    content: "\e61a";
+    vertical-align: -4pt;
 }
