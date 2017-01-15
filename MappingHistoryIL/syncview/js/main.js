@@ -79,15 +79,6 @@ require([
     });
     map.add(sceneLayer);
 
-    // Defined a Camera object
-    var cam = new Camera({
-        position: [-88.227247, 40.102904, 350],
-        tilt: 75      // bird's eye view
-    });
-
-    sceneHome.viewpoint = cam;
-    //mapHome.viewopint = cam;
-
 
     /**
      * utility method that synchronizes the viewpoint of a view to other views
@@ -181,25 +172,40 @@ require([
 
     // bind the views
     synchronizeViews([sceneView, mapView]);
-});
 
 
+    // Animate the view after the views have loaded
+    sceneView.then(function () {
+        // All the resources in the SceneView and the map have loaded. Now execute additional processes
 
-// jQuery UI
-
-$(function () {
-    $("#switchButton").on("click", function () {
-        $("#switchButton").hide("fade", 125);
-        $(".mainDiv").switchClass("mainDiv", "mainDivTrans1", 125, "linear", function () {
-            $(".mainDivTrans1").switchClass("mainDivTrans1", "mainDivTrans2", 125, "linear", function () {
-                $(".mainDivTrans2").switchClass("mainDivTrans2", "ovDiv", 750, "linear");
-            });
-        });
-        $(".ovDiv").switchClass("ovDiv", "ovDivTrans1", 750, "linear", function () {
-            $(".ovDivTrans1").switchClass("ovDivTrans1", "ovDivTrans2", 125, "linear", function () {
-                $(".ovDivTrans2").switchClass("ovDivTrans2", "mainDiv", 125, "linear", $("#switchButton").show("fade", 500));
-            });
+        var cam = new Camera({
+            position: [-88.227247, 40.102904, 350],
+            tilt: 75      // bird's eye view
         });
 
+        sceneView.goTo(cam);
+
+        // Define a viewopint object
+        sceneHome.viewpoint = cam;
+
+    }, function (error) {
+        // Use the errback function to handle when the view doesn't load properly
+        console.log("The view's resources failed to load: ", error);
     });
+
+  //  mapView.load
+  //      .then(function () {
+  //          // All the resources in the MapView and the map have loaded. Now execute additional processes
+  //          // the webmap successfully loaded
+  //          // Define a viewopint object
+  //          var vpt = mapView.viewpoint.clone();
+  //          console.log("center: ");
+  //          console.log(vpt.targetGeometry.latitude);
+  //          mapHome.viewpoint = vpt;
+  //      })
+  //.otherwise(function (error) {
+  //    // the webmap or portal failed to load
+  //    console.log("The resource failed to load: ", error);
+  //});
+
 });

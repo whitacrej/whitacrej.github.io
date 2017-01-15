@@ -5,145 +5,261 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <title>Synchronize MapView and SceneView - 4.2</title>
 
+    <link rel="stylesheet" href="https://js.arcgis.com/4.2/esri/css/main.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
 
     <style>
-        html,
-        body {
+        html, body {
             padding: 0;
             margin: 0;
             height: 100%;
+            overflow: hidden;
         }
 
+        #switchButton {
+            position: absolute;
+            z-index: 99;
+            bottom: 267px;
+            right: 267px;
+            height: 30px;
+            width: 30px;
+            border: 2px solid white;
+            border-radius: 50%;
+            background-color: darkgrey;
+            opacity: .75;
+            text-align: center;
+            color: white;
+            font-size: 16pt;
+            text-align: center;
+        }
+
+            #switchButton:hover {
+                cursor: pointer;
+                opacity: 1.0;
+            }
+
         .mainDiv {
-            float: left;
+            position: absolute;
+            left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-            background-color: black;
         }
 
-        .syncDiv {
+        .mainDivTrans1 {
             position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 350px;
-            height: 350px;
+            left: 40%;
+            top: 40%;
+            width: 2000px;
+            height: 2000px;
+            margin: -1000px 0 0 -1000px;
+            z-index: 0;
+            border-radius: 1000px;
+        }
+
+        .mainDivTrans2 {
+            position: absolute;
+            left: 40%;
+            top: 40%;
+            width: 400px;
+            height: 400px;
+            margin: -200px 0 0 -200px;
             z-index: 1;
-            border-left: 5px solid white;
-            border-top: 5px solid white;
-            background-color: black;
-            border-top-left-radius: 30px;
+            border: 3px solid white;
+            border-radius: 200px;
+            box-shadow: -5px -5px 10px rgba(0,0,0,0.75);
         }
 
-        .smallImageSwitchView {
+        .ovDiv {
             position: absolute;
-            bottom: 332px;
-            right: 332px;
-            height: 30px;
-            width: 30px;
-            cursor: pointer;
-            background: url(http://storymaps.esri.com/stories/2014/bee-tour/resources/icons/switchLayout.png);
-            /*background: url(../../resources/icons/switchLayout.png);*/
-            background-repeat: no-repeat;
-            background-size: 100%;
-            z-index: 99;
-            cursor: pointer;
-            opacity: .75;
+            right: -60px;
+            bottom: -60px;
+            width: 400px;
+            height: 400px;
+            z-index: 1;
+            border-left: 3px solid white;
+            border-top: 3px solid white;
+            border-radius: 200px;
+            box-shadow: -10px -10px 20px rgba(0,0,0,0.75);
         }
 
-            .smallImageSwitchView:hover {
-                opacity: 1.0;
-            }
+        .ovDivTrans1 {
+            position: absolute;
+            left: 40%;
+            top: 40%;
+            width: 400px;
+            height: 400px;
+            margin: -200px 0 0 -200px;
+            z-index: 0;
+            border: 3px solid white;
+            border-radius: 200px;
+            box-shadow: -5px -5px 10px rgba(0,0,0,0.75);
+        }
+
+        .ovDivTrans2 {
+            position: absolute;
+            left: 40%;
+            top: 40%;
+            width: 2000px;
+            height: 2000px;
+            margin: -1000px 0 0 -1000px;
+            z-index: 0;
+            border-radius: 1000px;
+        }
+
+        .esri-button {
+            border-radius: 50%;
+        }
+
+        .esri-zoom {
+            background-color: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .esri-home {
+            border-radius: 50%;
+        }
+
+        .ovDiv .esri-ui-top-left {
+            top: 250px;
+            left: 40px;
+        }
+
+        .ovDiv .esri-ui-top-right {
+            top: 245px;
+            right: 60px;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+
+        .black {
+            background-color: black;
+        }
+
+        /*Esri Calcite Font*/
+        @font-face {
+            font-family: 'CalciteWebCoreIcons';
+            src: url('https://raw.githubusercontent.com/Esri/arcgis-js-api/master/themes/calcite/icons/fonts/CalciteWebCoreIcons.ttf?erniwi') format('truetype'), url('https://raw.githubusercontent.com/Esri/arcgis-js-api/master/themes/calcite/icons/fonts/CalciteWebCoreIcons.woff?erniwi') format('woff'), url('https://raw.githubusercontent.com/Esri/arcgis-js-api/master/themes/calcite/icons/fonts/CalciteWebCoreIcons.svg?erniwi#CalciteWebCoreIcons') format('svg');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        [class^="esri-icon-"], [class*=" esri-icon-"] {
+            /* use !important to prevent issues with browser extensions that change fonts */
+            font-family: 'CalciteWebCoreIcons' !important;
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            /* Better Font Rendering =========== */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .esri-icon-swap:before {
+            content: "\e90b";
+        }
+
+        .esri-icon-refresh:before {
+            content: "\e61a";
+            vertical-align: -4pt;
+        }
     </style>
 
-    <link rel="stylesheet" href="https://js.arcgis.com/4.2/esri/css/main.css">
     <script src="https://js.arcgis.com/4.2/"></script>
 
     <script>
         require([
-          "esri/Map",
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/views/SceneView",
+            "esri/layers/SceneLayer",
 
-          "esri/views/MapView",
-          "esri/views/SceneView",
+            "esri/Camera",
+            "esri/widgets/Home",
+            "esri/widgets/Compass",
 
-          "esri/layers/SceneLayer",
-          "esri/renderers/SimpleRenderer",
-          "esri/symbols/MeshSymbol3D",
-          "esri/symbols/FillSymbol3DLayer",
-          "esri/widgets/Home",
-          "esri/widgets/Compass",
+            "esri/core/watchUtils",
 
-          "esri/core/watchUtils",
-
-          "dojo/domReady!"
+            "dojo/domReady!"
         ], function (
-          Map,
-          MapView, SceneView, SceneLayer, SimpleRenderer, MeshSymbol3D,
-          FillSymbol3DLayer,
-          Home, Compass,
-          watchUtils
-        ) {
+            Map, MapView, SceneView, SceneLayer,
+            Camera, Home, Compass,
+            watchUtils
+            ) {
 
+            // Add Map
             var map = new Map({
                 basemap: 'satellite',
                 ground: 'world-elevation'
             });
 
-            // Add 3D SceneView
-            var view1 = new SceneView({
-                id: 'view1',
-                container: 'view1Div',
+            // Add 2D MapView
+            var mapView = new MapView({
+                id: 'mapView',
+                container: 'mapViewDiv',
                 map: map,
-                camera: {
-                    position: [-88.227247, 40.102904, 350],
-                    tilt: 75
+                center: [-88.227247, 40.102904],
+                zoom: 2,
+                // Disable zoom snapping to get the best synchonization
+                constraints: {
+                    snapToZoom: false
                 }
             });
 
-            // Modify Widgets
-
-            view1.ui.remove("navigation-toggle");
-            // view1.ui.move("zoom", "top-right");
             // Add home widget to the top right corner of the MapView
-            var homeWidget = new Home({
-                view: view1
+            var mapHome = new Home({
+                view: mapView
             });
-            view1.ui.add(homeWidget, "top-right");
-            view1.ui.move("compass", "top-right");
+            mapView.ui.add(mapHome, "top-right");
 
-            // Create SceneLayer and add to the map
+            // Add compass widget to the top right corner of the view
+            var compass = new Compass({
+                view: mapView
+            });
+            mapView.ui.add(compass, "top-right");
+
+            // Add 3D SceneView
+            var sceneView = new SceneView({
+                id: 'sceneView',
+                container: 'sceneViewDiv',
+                map: map,
+                center: [-88.227247, 40.102904],
+                zoom: 2
+            });
+
+            // Remove navigation toggle widget from the SceneView
+            sceneView.ui.remove("navigation-toggle");
+
+            // Add home widget to the top right corner of the SceneView
+            var sceneHome = new Home({
+                view: sceneView
+            });
+            sceneView.ui.add(sceneHome, "top-right");
+
+            // Move compass widget to top right corner of the SceneView
+            sceneView.ui.move("compass", "top-right");
+
+            // Create SceneLayer and add to the SceneView
             var sceneLayer = new SceneLayer({
                 url: "https://gis.library.illinois.edu/arcgis/rest/services/Hosted/Buildings_3D/SceneServer/layers/0",
                 popupEnabled: false
             });
             map.add(sceneLayer);
 
-
-            // Add 2D MapView
-            var view2 = new MapView({
-                id: 'view2',
-                container: 'view2Div',
-                map: map,
-                constraints: {
-                    // Disable zoom snapping to get the best synchonization
-                    snapToZoom: false
-                }
+            // Defined a Camera object
+            var cam = new Camera({
+                position: [-88.227247, 40.102904, 350],
+                tilt: 75      // bird's eye view
             });
 
-            // Add home widget to the top left corner of the MapView
-            var homeWidget = new Home({
-                view: view2
-            });
-            view2.ui.add(homeWidget, "top-right");
-
-            // Add compass widget to the top right corner of the view
-            var compass = new Compass({
-                view: view2
-            });
-            view2.ui.add(compass, "top-right");
-
+            sceneHome.viewpoint = cam;
+            //mapHome.viewopint = cam;
 
 
             /**
@@ -212,7 +328,7 @@
                         clear();
                         interactWatcher.remove();
                     }
-                }
+                };
             };
 
             /**
@@ -233,33 +349,33 @@
                         });
                         handles = null;
                     }
-                }
-            }
+                };
+            };
 
             // bind the views
-            synchronizeViews([view1, view2]);
-
-
-
+            synchronizeViews([sceneView, mapView]);
         });
-
-
-
-        /**
-       * jQuery UI
-       */
 
     </script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
     <script type="text/javascript">
 
         $(function () {
-            $("#button").on("click", function () {
-                $(".mainDiv").switchClass("mainDiv", "syncDiv", 100);
-                $(".syncDiv").switchClass("syncDiv", "mainDiv", 100);
+            $("#switchButton").on("click", function () {
+                $("#switchButton").hide("fade", 125);
+                $(".mainDiv").switchClass("mainDiv", "mainDivTrans1", 125, "linear", function () {
+                    $(".mainDivTrans1").switchClass("mainDivTrans1", "mainDivTrans2", 125, "linear", function () {
+                        $(".mainDivTrans2").switchClass("mainDivTrans2", "ovDiv", 750, "linear");
+                    });
+                });
+                $(".ovDiv").switchClass("ovDiv", "ovDivTrans1", 750, "linear", function () {
+                    $(".ovDivTrans1").switchClass("ovDivTrans1", "ovDivTrans2", 125, "linear", function () {
+                        $(".ovDivTrans2").switchClass("ovDivTrans2", "mainDiv", 125, "linear", $("#switchButton").show("fade", 500));
+                    });
+                });
+
             });
         });
 
@@ -267,10 +383,10 @@
 
 
 </head>
-<body>
-    <div id="button" class="smallImageSwitchView"></div>
-    <div id="view2Div" class="mainDiv"></div>
-    <div id="view1Div" class="syncDiv"></div>
+<body class="black">
+    <div id="switchButton" class="esri-icon-refresh"></div>
+    <div id="mapViewDiv" class="mainDiv black"></div>
+    <div id="sceneViewDiv" class="ovDiv black"></div>
 </body>
 
 </html>
