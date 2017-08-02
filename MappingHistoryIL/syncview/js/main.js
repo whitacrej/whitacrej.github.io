@@ -1,6 +1,5 @@
 // JavaScript Document
 
-
 require([
     "esri/Map",
     "esri/views/MapView",
