@@ -41,7 +41,7 @@ define([
           searchFields: [field],
           displayField: field,
           exactMatch: false,
-          placeholder: "Ex: Empire State Building",
+          placeholder: "Ex: Memorial Stadium",
           popup: null,
           popupOpenOnSelect: false
         }],

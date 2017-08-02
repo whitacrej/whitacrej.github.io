@@ -62,7 +62,7 @@
       var settings = {
         ageClasses: [
           { minValue: 1860, maxValue: 1899, color: [153, 167, 204] },
-          { minValue: 1925, maxValue: 1949, color: [149, 184, 214] },
+          { minValue: 1900, maxValue: 1949, color: [149, 184, 214] },
           { minValue: 1950, maxValue: 1974, color: [153, 204, 203] },
           { minValue: 1975, maxValue: 1999, color: [153, 204, 179] },
           { minValue: 2000, maxValue: 2024, color: [175, 206, 152] }
@@ -74,8 +74,8 @@
         },
         buildingOptions: {
           minHeight: 0,
-          maxHeight: 1500,
-          minCnstrctYear: 1900,
+          maxHeight: 200,
+          minCnstrctYear: 1860,
           maxCnstrctYear: 2024
         },
         initPeriod: [true, true, true, true, true],
@@ -109,7 +109,7 @@
       <img id="loadingImage" src="./img/loading.gif" alt="Loading..." />
     </p>
   </div>
-  <div id="headerDiv">University of Illinois <span class="headerSub">Building Explorer</span></div>
+  <div id="headerDiv">University of Illinois <br /><span class="headerSub">Building Explorer</span></div>
   <div id="menuDiv">
     <div id="timeWrap">
       <div id="heightDiv"></div>
@@ -121,7 +121,7 @@
     <img src="./img/esri-10GlobeLogo_1C.png">
     <a href="https://developers.arcgis.com/javascript/" target="_blank">ArcGIS API for JavaScript</a>
   </div>
-  <div id="impressumContainer">
+   <div id="impressumContainer">
     <span class="esri-icon-close" id="close"></span>
     <h2>Disclaimer</h2>
     <p>This is a non-commercial, demo application made at the Esri R&D Center Zurich for building exploration in Manhattan. It is built on top of <a href="https://developers.arcgis.com/javascript/" target="_blank">ArcGIS API for JavaScript version 4.4</a> and allows users to explore some of the highest buildings in Manhattan in 3D.</p>
@@ -137,7 +137,7 @@
       <li><a href="http://catalog.opendata.city/dataset/pediacities-nyc-neighborhoods/resource/91778048-3c58-449c-a3f9-365ed203e914" target="_blank"> Manhattan neighborhoods </a> provided by <a href="http://catalog.opendata.city/" target="_blank">Catalog Opendata City</a> under a <a href="http://opendefinition.org/licenses/odc-by/" target="_blank">Open Data Commons Attribution License</a>.</li>
       </ul>
   </div>
-  <div id="impressumLink"><a>Disclaimer</a></div>
+  <div id="impressumLink"><a>Disclaimer</a></div> 
 </body>
 
 </html>

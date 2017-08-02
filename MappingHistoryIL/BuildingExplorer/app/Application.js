@@ -100,19 +100,13 @@ define([
         },
         camera: {
           position: {
-            x: -8240826.9778516665,
-            y: 4967756.95441402,
-            z: 1472.4,
+            x: -9822788.068049848,
+            y: 4878153.343179936,
+            z: 674.4079045625404,
             spatialReference: 3857
           },
-          heading: 59,
-          tilt: 49
-        },
-        constraints: {
-          tilt: {
-            max: 70,
-            mode: "manual"
-          }
+          heading: 17.869050410216936,
+          tilt: 82.92103457015716
         },
         highlightOptions: this.settings.highlightOptions,
         popup: {
@@ -149,11 +143,11 @@ define([
         definitionExpression: definitionExpression
       });
 
-      var rendererGen = new RendererGenerator(this.settings, sceneLayer, "CNSTRCT_YR", state);
+      var rendererGen = new RendererGenerator(this.settings, sceneLayer, "yearbuilt", state);
 
       // feature layer with centroids of buildings - displayed on top of buildings to show which buildings contain information from wikipedia
       var infoPoints = new FeatureLayer({
-        url: "https://services2.arcgis.com/cFEFS0EWrhfDeVw9/ArcGIS/rest/services/Centroids_Manhattan_Information/FeatureServer/0",
+        url: "https://lib-gis-server.library.illinois.edu/arcgis/rest/services/Hosted/MappingHistoryUI/FeatureServer/1",
         popupEnabled: false,
         // relative to scene displays icons on top of buildings
         elevationInfo: {
@@ -165,8 +159,9 @@ define([
         featureReduction: {
           type: "selection"
         },
-        renderer: rendererGen.createUniqueValueRenderer("WIKI", {value: 1, image: "./img/wiki.png"}),
-        visible: false
+        renderer: rendererGen.createUniqueValueRenderer("model3d_incl", {value: "Yes", image: "./img/wiki.png"}),
+        visible: false,
+        definitionExpression: definitionExpression
       });
 
       map.addMany([sceneLayer, infoPoints]);
@@ -178,11 +173,11 @@ define([
       var infoWidget = new InfoWidget(view, state);
 
       // initialize search widget
-      searchWidget.initialize(view, infoPoints, "NAME", state);
+      searchWidget.initialize(view, infoPoints, "bldgname", state);
 
       // create a query on the infoPoints layer to get all the buildings that will be displayed in the height graph
       var query = infoPoints.createQuery();
-      query.outFields = ["OBJECTID", "NAME", "HEIGHTROOF", "CNSTRCT_YR", "WIKI", "TOP20"];
+      query.outFields = ["objectid", "bldgname", "height_max", "yearbuilt", "model3d_incl"];
       query.returnGeometry = true;
       infoPoints.queryFeatures(query)
         .then(initGraphics)
@@ -391,9 +386,9 @@ define([
   });
 
   function generateDefinitionExpression(filter) {
-    return "HEIGHTROOF > " + filter[0] + " AND " +
-      "HEIGHTROOF < " + filter[1] + " AND " +
-      "CNSTRCT_YR >= 1900 AND CNSTRCT_YR <= 2024";
+    return "height_max > " + filter[0] + " AND " +
+      "height_max < " + filter[1] + " AND " +
+      "yearbuilt >= 1860 AND yearbuilt <= 2024";
   }
 
   function error(err) {

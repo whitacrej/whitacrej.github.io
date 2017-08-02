@@ -54,10 +54,10 @@ define([
       var view = this.view;
 
       // set the building name, height and construction year from the building attributes
-      var name = (attributes.name === " ") ? "Building" : attributes.name;
+      var name = (attributes.bldgname === " ") ? "Building" : attributes.bldgname;
       view.popup.content = "<h3>" + name  + "</h3>"
-      + "<p class='info'> <img src='./img/height.png'> " + Math.round(attributes.heightroof) + " feet"
-      + "<img src='./img/construction.png'> " + attributes.cnstrct_yr + "</p>";
+      + "<p class='info'> <img src='./img/height.png'> " + Math.round(attributes.height_max) + " feet"
+      + "<img src='./img/construction.png'> " + attributes.yearbuilt + "</p>";
 
       view.popup.open();
 
@@ -73,7 +73,7 @@ define([
       // See https://wikimediafoundation.org/wiki/Terms_of_Use for details.
       function getWikiInfo() {
         var url = "https://en.wikipedia.org/w/api.php?action=query" +
-        "&list=search&srsearch=" + attributes.name + "&srwhat=text&prop=extracts|pageimages|imageinfo|pageterms|info&exintro=1&explaintext=1&exlimit=20&pilimit=20&piprop=original" +
+        "&list=search&srsearch=" + attributes.bldgname + "&srwhat=text&prop=extracts|pageimages|imageinfo|pageterms|info&exintro=1&explaintext=1&exlimit=20&pilimit=20&piprop=original" +
         "&generator=geosearch&ggscoord=" + position.latitude + "%7C" + position.longitude + "&ggsradius=200&ggslimit=20&origin=*&format=json";
         return esriRequest(url, {
           responseType: "json"

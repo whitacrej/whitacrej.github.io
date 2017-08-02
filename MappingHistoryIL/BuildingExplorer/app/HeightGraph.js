@@ -59,9 +59,9 @@ define([
 
       // create axes
       var yAxis = d3.axisLeft(yScale)
-        .tickValues([0, 500, 1000, 1500])
+        .tickValues([0, 100, 200])
         .tickFormat(function(d) {
-          if (d === 1500) {
+          if (d === 500) {
             return d + " ft";
           }
           else {
@@ -80,8 +80,10 @@ define([
           .style("stroke-dasharray", "2, 2")
           .style("stroke", "#bbb");
       }
-      appendHorizontalLine(this.paddingLeft, 1000, 2025, 1000);
-      appendHorizontalLine(this.paddingLeft, 500, 2025, 500);
+      appendHorizontalLine(this.paddingLeft, 200, 2025, 200);
+      appendHorizontalLine(this.paddingLeft, 150, 2025, 150);
+      appendHorizontalLine(this.paddingLeft, 100, 2025, 100);
+      appendHorizontalLine(this.paddingLeft, 50, 2025, 50);
       appendHorizontalLine(this.paddingLeft, 0, 2025, 0);
       appendHorizontalLine(this.paddingLeft, 1408, 2009, 1408);
 
@@ -136,7 +138,7 @@ define([
         .attr("class", function(d) {
           var value;
           settings.ageClasses.forEach(function(e, i) {
-            if (e.minValue <= d.attributes.cnstrct_yr && d.attributes.cnstrct_yr <= e.maxValue) {
+            if (e.minValue <= d.attributes.yearbuilt && d.attributes.yearbuilt <= e.maxValue) {
               value = i;
             }
           });
@@ -148,7 +150,7 @@ define([
         })
         .attr("fill", function(d) {
           var value = settings.ageClasses.filter(function(e) {
-            return (e.minValue <= d.attributes.cnstrct_yr && d.attributes.cnstrct_yr <= e.maxValue);
+            return (e.minValue <= d.attributes.yearbuilt && d.attributes.yearbuilt <= e.maxValue);
           });
 
           if (value[0].color.length === 4) {
@@ -159,10 +161,10 @@ define([
           }
         })
         .attr("cx", function(d) {
-          return xScale(d.attributes.cnstrct_yr);
+          return xScale(d.attributes.yearbuilt);
         })
         .attr("cy", function(d) {
-          return yScale(d.attributes.heightroof);
+          return yScale(d.attributes.height_max);
         })
         .on("mouseover", function(d) {
           state.hoveredBuilding = d;
@@ -243,8 +245,8 @@ define([
           .attr("text-anchor", "middle")
           .text(function() {
             var a = d.attributes;
-            var name = a.name !== " " ? a.name : "Building " + a.name;
-            return name + " built in " + a.cnstrct_yr + "; height: " + parseInt(a.heightroof, 10) + " feet";
+            var name = a.bldgname !== " " ? a.bldgname : "Building " + a.bldgname;
+            return name + " built in " + a.yearbuilt + "; height: " + parseInt(a.height_max, 10) + " feet";
           });
         var bbox = text.node().getBBox();
 
@@ -290,7 +292,7 @@ define([
     // set display:none to circles when the corresponding buildings are filtered out
     updateFilter: function(newFilter) {
       this.circles.attr("display", function(d) {
-        if ((d.attributes.heightroof < newFilter[0]) || (d.attributes.heightroof > newFilter[1])) {
+        if ((d.attributes.height_max < newFilter[0]) || (d.attributes.height_max > newFilter[1])) {
           return "none";
         }
         else {
