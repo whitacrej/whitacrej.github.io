@@ -1,6 +1,6 @@
 # University of Illinois Building Explorer
 
-[View it live](http://whitacrej.github.io/MappingHistoryIL/BuildingExplorer/)
+[View it live](https://whitacrej.github.io/MappingHistoryIL/BuildingExplorer/)
 
 
 Forked from:
