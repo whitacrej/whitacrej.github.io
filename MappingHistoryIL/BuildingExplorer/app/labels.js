@@ -20,7 +20,7 @@
 
 /***********************************
  * This module generates the labels
- * of neighbourhoods in the map from
+ * of campus landmarks in the map from
  * a GeoJSON file of points.
  **********************************/
 
@@ -55,7 +55,7 @@ define([
               geometry: new Point({
                 x: feat.geometry.coordinates[0],
                 y: feat.geometry.coordinates[1],
-                z: 0
+                z: 200
               }),
               attributes: {
                 "OBJECTID": feat.properties.FID,
@@ -95,7 +95,7 @@ define([
                       family: "sans-serif",
                       weight: "bold"
                     },
-                    size: settings.size || 12,
+                    size: settings.size || 10,
                     halo: {
                       color: [50, 50, 50, 0.8],
                       size: 1

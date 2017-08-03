@@ -100,13 +100,13 @@ define([
         },
         camera: {
           position: {
-            x: -9822788.068049848,
-            y: 4878153.343179936,
-            z: 674.4079045625404,
+            x: -9821751.749107294,
+            y: 4876474.050669157,
+            z: 1453.855281780474,
             spatialReference: 3857
           },
-          heading: 17.869050410216936,
-          tilt: 82.92103457015716
+          heading: 0,
+          tilt: 70.115026426991
         },
         highlightOptions: this.settings.highlightOptions,
         popup: {
@@ -166,8 +166,8 @@ define([
 
       map.addMany([sceneLayer, infoPoints]);
 
-      // add labels to display Manhattan boroughs
-      labels.initialize("./data/manhattan-boroughs.json", "name", { color: "#000" }, map);
+      // add labels to display Campus landmarks
+      labels.initialize("./data/uofi-labels.json", "name", { color: "#000" }, map);
 
       // initialize info widget
       var infoWidget = new InfoWidget(view, state);
@@ -312,7 +312,7 @@ define([
       view.on("click", function(event) {
         view.hitTest(event.screenPoint).then(function(response) {
           var graphic = response.results[0].graphic;
-          if (graphic && (graphic.layer.title === "Buildings Manhattan wiki")) {
+          if (graphic && (graphic.layer.title === "University of Illinois Buildings")) {
             var feature = findFeature(graphic);
             if (feature) {
               if (state.selectedBuilding == null) {
@@ -336,7 +336,7 @@ define([
           lastHover = newHover;
           view.hitTest({ x: evt.x, y: evt.y }).then(function(response) {
             var graphic = response.results[0] ? response.results[0].graphic : null;
-            if (graphic && (graphic.layer.title === "Buildings Manhattan wiki")) {
+            if (graphic && (graphic.layer.title === "University of Illinois Buildings")) {
               var feature = findFeature(graphic);
               var building = state.hoveredBuilding;
               if (feature) {
@@ -361,7 +361,7 @@ define([
 
       function findFeature(graphic) {
         var feature = buildings.filter(function(b) {
-          return (b.attributes.objectid === graphic.attributes.OBJECTID);
+          return (b.attributes.objectid === graphic.attributes.objectid);
         })[0];
         return feature;
       }
