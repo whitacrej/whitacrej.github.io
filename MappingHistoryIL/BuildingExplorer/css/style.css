@@ -110,16 +110,17 @@ button {
   position: absolute;
   right: 10px;
   bottom: 10px;
-  width: 120px;
+  width: 180px;
 }
 
 #logo img {
-  height: 40px;
-  display: block;
+  height: 50px;
+  display: inline;
+  float: right;
 }
 
 #logo a {
-  font-size: 0.6em;
+  font-size: 0.75em;
   text-align: right;
   color: rgb(0, 0, 0);
   text-decoration: none;

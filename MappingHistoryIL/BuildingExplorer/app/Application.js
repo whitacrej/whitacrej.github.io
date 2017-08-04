@@ -35,6 +35,7 @@ define([
   "esri/layers/SceneLayer",
   "esri/layers/FeatureLayer",
   "esri/tasks/support/Query",
+  "esri/widgets/Home",
 
   "app/RendererGenerator",
   "app/HeightGraph",
@@ -48,7 +49,7 @@ define([
   "dojo/on",
   "dojo/query"
 ], function(declare, Accessor,
-  Map, SceneView, SceneLayer, FeatureLayer, Query,
+  Map, SceneView, SceneLayer, FeatureLayer, Query, Home,
   RendererGenerator, HeightGraph, Timeline, InfoWidget, labels, searchWidget, categorySelection,
   dom, on, domQuery
 ) {
@@ -125,8 +126,13 @@ define([
         }
       });
 
+      var homeBtn = new Home({
+        view: view
+      });
+
       // remove navigation widgets from upper left corner
       view.ui.empty("top-left");
+      view.ui.add(homeBtn, "bottom-right");
 
       // set view on the window for debugging
       window.view = view;
