@@ -88,19 +88,19 @@ define([
       }
       else {
         if (category === "info") {
-          field = "WIKI";
+          field = "model3d_incl";
         }
         else {
-          field = "TOP20";
+          field = "campusmapbldgs";
         }
         renderer.visualVariables = [{
           type: "opacity",
           field: field,
           stops: [{
-            value: 0,
+            value: null,
             opacity: 0.2
           }, {
-            value: 1,
+            value: "Yes",
             opacity: 1
           }]
         }];

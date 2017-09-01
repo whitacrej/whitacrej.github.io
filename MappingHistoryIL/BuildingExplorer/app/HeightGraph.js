@@ -310,7 +310,7 @@ define([
       else {
         var property = (newCategory === "info") ? "wiki" : "top20";
         this.circles.attr("opacity", function(d) {
-          if (d.attributes[property] === 1) {
+          if (d.attributes[property] === "Yes") {
             return 1;
           }
           else {
@@ -318,7 +318,7 @@ define([
           }
         })
         .attr("r", function(d) {
-          if (d.attributes[property] === 1) {
+          if (d.attributes[property] === "Yes") {
             return 4;
           }
           else {

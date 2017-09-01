@@ -36,6 +36,7 @@ define([
   "esri/layers/FeatureLayer",
   "esri/tasks/support/Query",
   "esri/widgets/Home",
+  "esri/widgets/Compass",
 
   "app/RendererGenerator",
   "app/HeightGraph",
@@ -49,7 +50,7 @@ define([
   "dojo/on",
   "dojo/query"
 ], function(declare, Accessor,
-  Map, SceneView, SceneLayer, FeatureLayer, Query, Home,
+  Map, SceneView, SceneLayer, FeatureLayer, Query, Home, Compass,
   RendererGenerator, HeightGraph, Timeline, InfoWidget, labels, searchWidget, categorySelection,
   dom, on, domQuery
 ) {
@@ -107,7 +108,7 @@ define([
             spatialReference: 3857
           },
           heading: 0,
-          tilt: 70.115026426991
+          tilt: 70
         },
         highlightOptions: this.settings.highlightOptions,
         popup: {
@@ -126,13 +127,22 @@ define([
         }
       });
 
+      // add Home button
       var homeBtn = new Home({
+        view: view
+      });
+
+      // add Compass button
+      var compass = new Compass({
         view: view
       });
 
       // remove navigation widgets from upper left corner
       view.ui.empty("top-left");
+
+      // add home button to botton-right
       view.ui.add(homeBtn, "bottom-right");
+      view.ui.add(compass, "bottom-left");
 
       // set view on the window for debugging
       window.view = view;
@@ -153,7 +163,7 @@ define([
 
       // feature layer with centroids of buildings - displayed on top of buildings to show which buildings contain information from wikipedia
       var infoPoints = new FeatureLayer({
-        url: "https://lib-gis-server.library.illinois.edu/arcgis/rest/services/Hosted/MappingHistoryUI/FeatureServer/1",
+        url: settings.infoPointsUrl,
         popupEnabled: false,
         // relative to scene displays icons on top of buildings
         elevationInfo: {
@@ -183,7 +193,7 @@ define([
 
       // create a query on the infoPoints layer to get all the buildings that will be displayed in the height graph
       var query = infoPoints.createQuery();
-      query.outFields = ["objectid", "bldgname", "height_max", "yearbuilt", "model3d_incl"];
+      query.outFields = ["objectid", "bldgname", "height_max", "yearbuilt", "model3d_incl", "campusmapbldgs"];
       query.returnGeometry = true;
       infoPoints.queryFeatures(query)
         .then(initGraphics)
@@ -210,7 +220,7 @@ define([
         // update timeline
         timeline.update(newPeriod);
       });
-
+      
       view.whenLayerView(sceneLayer)
         .then(function(lv) {
           state.watch("hoveredBuilding", function(newFeature) {
@@ -367,7 +377,7 @@ define([
 
       function findFeature(graphic) {
         var feature = buildings.filter(function(b) {
-          return (b.attributes.objectid === graphic.attributes.objectid);
+          return (b.attributes.objectid === graphic.attributes.OBJECTID);
         })[0];
         return feature;
       }
