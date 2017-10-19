@@ -352,7 +352,7 @@ define([
           lastHover = newHover;
           view.hitTest({ x: evt.x, y: evt.y }).then(function(response) {
             var graphic = response.results[0] ? response.results[0].graphic : null;
-            if (graphic && (graphic.layer.title === "University of Illinois Buildings")) {
+            if (graphic && (graphic.layer.title === "MappingHistoryUI 3D - Buildings 3D MassModels")) {
               var feature = findFeature(graphic);
               var building = state.hoveredBuilding;
               if (feature) {
