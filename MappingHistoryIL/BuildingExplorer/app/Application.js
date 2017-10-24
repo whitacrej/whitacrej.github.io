@@ -175,7 +175,7 @@ define([
         featureReduction: {
           type: "selection"
         },
-        renderer: rendererGen.createUniqueValueRenderer("model3d_incl", {value: "Yes", image: "./img/wiki.png"}),
+        renderer: rendererGen.createUniqueValueRenderer("Model3D_Incl", {value: "Yes", image: "./img/wiki.png"}),
         visible: false,
         definitionExpression: definitionExpression
       });
@@ -189,11 +189,11 @@ define([
       var infoWidget = new InfoWidget(view, state);
 
       // initialize search widget
-      searchWidget.initialize(view, infoPoints, "bldgname", state);
+      searchWidget.initialize(view, infoPoints, "BldgName", state);
 
       // create a query on the infoPoints layer to get all the buildings that will be displayed in the height graph
       var query = infoPoints.createQuery();
-      query.outFields = ["objectid", "bldgname", "height_max", "yearbuilt", "model3d_incl", "campusmapbldgs"];
+      query.outFields = ["OBJECTID", "BldgName", "Height_Max", "YearBuilt", "Model3D_Incl", "CampusMapBldgs"];
       query.returnGeometry = true;
       infoPoints.queryFeatures(query)
         .then(initGraphics)
@@ -328,7 +328,7 @@ define([
       view.on("click", function(event) {
         view.hitTest(event.screenPoint).then(function(response) {
           var graphic = response.results[0].graphic;
-          if (graphic && (graphic.layer.title === "University of Illinois Buildings")) {
+          if (graphic && (graphic.layer.title === "MappingHistoryUI 3D - Buildings 3D MassModels")) {
             var feature = findFeature(graphic);
             if (feature) {
               if (state.selectedBuilding == null) {
@@ -352,7 +352,7 @@ define([
           lastHover = newHover;
           view.hitTest({ x: evt.x, y: evt.y }).then(function(response) {
             var graphic = response.results[0] ? response.results[0].graphic : null;
-            if (graphic && (graphic.layer.title === "University of Illinois Buildings")) {
+            if (graphic && (graphic.layer.title === "MappingHistoryUI 3D - Buildings 3D MassModels")) {
               var feature = findFeature(graphic);
               var building = state.hoveredBuilding;
               if (feature) {
