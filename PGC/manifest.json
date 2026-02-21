@@ -1,7 +1,7 @@
 {
   "name": "PGC Mapping Center",
   "short_name": "PGC Maps",
-  "start_url": "/",
+  "start_url": "/PGC",
   "display": "standalone",
   "background_color": "grey",
   "theme_color": "green",
