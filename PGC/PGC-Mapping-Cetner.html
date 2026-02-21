@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <!-- iOS Add‑to‑Home‑Screen Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="PGC Mapping Center">
+
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="PGC_Logo-300.png">
+
+  <!-- Standard Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="PGC_Logo-300.png">
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PGC Mapping Center</title>
+
+  <!-- Remove margins for full‑screen iframe -->
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    #app-container {
+      width: 100%;
+      height: 100%;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-container">
+    <iframe src="https://experience.arcgis.com/experience/90a7d51caa0f483fab489607a5506314"></iframe>
+  </div>
+</body>
+</html>
